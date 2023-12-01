@@ -1,9 +1,9 @@
-# Advent of Code 2023
+# 🎄 Advent of Code 2023 🎄
 
-## Summary
+## 🎄 Summary 🎄
 These are my solutions for the [Advent of Code 2023](https://adventofcode.com/2023) challenges.
 
-## Results
+## 🎄 Results 🎄
 
 | Day | Stars | Name                                                             | Speed Part A | Speed Part B | LOC |
 | --- | ----- | ---------------------------------------------------------------- | ----- | ----- | --- | 
