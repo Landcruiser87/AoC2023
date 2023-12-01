@@ -80,7 +80,6 @@ def run_part_A():
 	data = data_load("data")
 	calibrations = extract_calibration(data)
 	return sum(calibrations)
-
 #Part A Notes
 #Nice easy snowball to start
 #Our job is to combine the first and last int found in each string. 

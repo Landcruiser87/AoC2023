@@ -5,7 +5,7 @@ def recurse_dir(dir = './'):
 
     for file in os.listdir(dir):
         if not os.path.isfile(dir + file):
-            count += recurse(dir + file + '/')
+            count += recurse_dir(dir + file + '/')
         elif file.endswith('.py'):
             with open(dir + file, 'r') as f:
                 for line in f.read().split('\n'):
