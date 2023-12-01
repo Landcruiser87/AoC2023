@@ -80,19 +80,23 @@ def run_part_A():
 	data = data_load("data")
 	calibrations = extract_calibration(data)
 	return sum(calibrations)
-#Part A Notes
-#Nice easy snowball to start
-#Our job is to combine the first and last int found in each string. 
-#return their sum
 
 @log_time
 def run_part_B():
 	data = data_load("data")
 	calibrations = extract_updated(data)
 	return sum(calibrations)
-#Part B Notes
-#Little more complicated but now numbers spelled out 1-9 as text count
 	
 print(f"Part A solution: \n{run_part_A()}\n")
 print(f"Part B solution: \n{run_part_B()}\n")
 print(f"Lines of code \n{recurse_dir('./day1/')}")
+
+########################################################
+#Notes
+#Part A Notes
+#Nice easy snowball to start
+#Our job is to combine the first and last int found in each string. 
+#return their sum
+
+#Part B Notes
+#Little more complicated but now numbers spelled out 1-9 as text count

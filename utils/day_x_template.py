@@ -1,10 +1,11 @@
 import os
 import sys
+from utils.time_run import log_time
 
 root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(root_folder)
 
-from utils.time_run import log_time
+
 def data_load(filen:str)->list:
 	# ./day/
 	with open(f'./day1/{filen}.txt', 'r') as f:
