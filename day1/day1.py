@@ -4,9 +4,9 @@ import sys
 root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(root_folder)
 from utils.time_run import log_time
+from utils.loc import recurse_dir
 
 def data_load(filen:str)->list:
-	# ./day/
 	with open(f'./day1/{filen}.txt', 'r') as f:
 		data = f.read().splitlines()
 		arr = [x if x != "" else "" for x in data]
@@ -27,7 +27,7 @@ def extract_calibration(data:list)->list:
 		calibrations.append(int(f'{sortme[0][0]}{sortme[-1][0]}'))
 	return calibrations
 
-def find_all(key:str, line:str):
+def find_all(key:str, line:str)-> int:
 	"""When you index a string or group of strings
 	you will get the first occurance returned.  But there
 	could be a situation where there's another of the same 
@@ -80,7 +80,7 @@ def extract_updated(data:list)->list:
 
 @log_time
 def run_part_A():
-	data = data_load("data")
+	data = data_load("test_data1")
 	calibrations = extract_calibration(data)
 	return sum(calibrations)
 #Part A Notes
@@ -90,7 +90,7 @@ def run_part_A():
 
 @log_time
 def run_part_B():
-	data = data_load("data")
+	data = data_load("test_data2")
 	calibrations = extract_updated(data)
 	return sum(calibrations)
 #Part B Notes
@@ -98,4 +98,4 @@ def run_part_B():
 	
 print(f"Part A solution: \n{run_part_A()}\n")
 print(f"Part B solution: \n{run_part_B()}\n")
-
+print(f"Lines of code \n{recurse_dir('./day1/')}")
