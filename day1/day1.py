@@ -15,12 +15,11 @@ def data_load(filen:str)->list:
 def extract_calibration(data:list)->list:
 	calibrations = []
 	for line in data:
-		temp = []
 		#Check if each character in a line is numeric. 
 		#if so add to temp list as a tuple of (number, pos)
-		for idx, ch in enumerate(line):
-			if ch.isdigit():
-				temp.append((ch, idx))
+		temp = []
+		[temp.append((ch, idx)) for idx, ch in enumerate(line) if ch.isdigit()]
+			
 		#sort the list
 		sortme = sorted(temp, key=lambda x:x[1])
 		#Take the first and last as your numbers
@@ -71,18 +70,17 @@ def extract_updated(data:list)->list:
 		#iterate each character in the line to check for numerics
 		#Add the number and its index as a tuple
 		#Sort the tuples.  Take the first and last
-		for idx, ch in enumerate(line):
-			if ch.isdigit():
-				temp.append((int(ch), idx))
+		[temp.append((int(ch), idx)) for idx, ch in enumerate(line) if ch.isdigit()]
 		sortme = sorted(temp, key=lambda x:x[1])
 		calibrations.append(int(f"{sortme[0][0]}{sortme[-1][0]}"))
 	return calibrations
 
 @log_time
 def run_part_A():
-	data = data_load("test_data1")
+	data = data_load("data")
 	calibrations = extract_calibration(data)
 	return sum(calibrations)
+
 #Part A Notes
 #Nice easy snowball to start
 #Our job is to combine the first and last int found in each string. 
@@ -90,7 +88,7 @@ def run_part_A():
 
 @log_time
 def run_part_B():
-	data = data_load("test_data2")
+	data = data_load("data")
 	calibrations = extract_updated(data)
 	return sum(calibrations)
 #Part B Notes
