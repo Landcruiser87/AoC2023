@@ -5,10 +5,9 @@ from utils.loc import recurse_dir
 root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(root_folder)
 
-
+DAY = './day1/'
 def data_load(filen:str)->list:
-	# ./day/
-	with open(f'./day1/{filen}.txt', 'r') as f:
+	with open(f'{DAY}{filen}.txt', 'r') as f:
 		data = f.read().splitlines()
 		arr = [x if x != "" else "" for x in data]
 	return arr
@@ -24,3 +23,8 @@ def run_part_B():
 	
 print(f"Part A solution: \n{run_part_A()}\n")
 print(f"Part B solution: \n{run_part_B()}\n")
+print(f"Lines of code \n{recurse_dir(DAY)}")
+
+########################################################
+#Notes
+#Part A Notes
