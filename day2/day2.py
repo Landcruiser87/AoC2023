@@ -19,7 +19,7 @@ def data_load(filen:str)->list:
 		arr = [x.split(":") if x != "" else "" for x in data]
 	return arr
 
-def gleamingthecube(data:list)->list:
+def gleamingthecube(data:list, part:str)->list:
 	valid_games = []
 	for game in data:
 		cube_d = {
@@ -35,47 +35,32 @@ def gleamingthecube(data:list)->list:
 				count, color = cube.split(" ")
 				if cube_d[color] < int(count):
 					cube_d[color] = int(count)
-		counter = 0
-		for color in CUBE_MAX.keys():
-			if cube_d[color] <= CUBE_MAX[color]:
-				counter += 1
-		if counter == 3:
-			valid_games.append(game[0])
-	ids = [int(gam.split(" ")[1]) for gam in valid_games]
-	return ids
-
-
-def gleamingthecube_again(data:list)->list:
-	valid_games = []
-	for game in data:
-		cube_d = {
-			"red":0,
-			"green":0,
-			"blue":0,
-		}
-		rolls = game[1].split(";")
-		for roll in rolls:
-			roll = roll.split(",")
-			for cube in roll:
-				cube = cube.strip()
-				count, color = cube.split(" ")
-				if cube_d[color] < int(count):
-					cube_d[color] = int(count)
-		valid_games.append(list(cube_d.values()))
-	powers = [np.prod(gam) for gam in valid_games]
-
-	return powers
+		if part == "A":
+			counter = 0
+			for color in CUBE_MAX.keys():
+				if cube_d[color] <= CUBE_MAX[color]:
+					counter += 1
+				if counter == 3:
+					valid_games.append(game[0])
+		else:
+			valid_games.append(list(cube_d.values()))
+	if part == "A":
+		ids = [int(gam.split(" ")[1]) for gam in valid_games]
+		return ids
+	else:
+		powers = [np.prod(gam) for gam in valid_games]
+		return powers
 
 @log_time
 def run_part_A():
 	data = data_load("data")
-	game_ids = gleamingthecube(data)
+	game_ids = gleamingthecube(data, "A")
 	return sum(game_ids)
 
 @log_time
 def run_part_B():
 	data = data_load("data")
-	game_ids = gleamingthecube_again(data)
+	game_ids = gleamingthecube(data, "B")
 	return sum(game_ids)
 	
 print(f"Part A solution: \n{run_part_A()}\n")
