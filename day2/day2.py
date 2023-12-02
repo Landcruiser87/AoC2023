@@ -4,6 +4,7 @@ root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__
 sys.path.append(root_folder)
 from utils.time_run import log_time
 from utils.loc import recurse_dir
+import numpy as np
 
 DAY = './day2/'
 CUBE_MAX = {
@@ -23,8 +24,8 @@ def gleamingthecube(data:list)->list:
 	for game in data:
 		cube_d = {
 			"red":0,
+			"green":0,
 			"blue":0,
-			"green":0
 		}
 		rolls = game[1].split(";")
 		for roll in rolls:
@@ -32,28 +33,53 @@ def gleamingthecube(data:list)->list:
 			for cube in roll:
 				cube = cube.strip()
 				count, color = cube.split(" ")
-				cube_d[color] += int(count)
+				if cube_d[color] < int(count):
+					cube_d[color] = int(count)
 		counter = 0
 		for color in CUBE_MAX.keys():
 			if cube_d[color] <= CUBE_MAX[color]:
 				counter += 1
 		if counter == 3:
 			valid_games.append(game[0])
-	ids = [int(game.split(" ")[1]) for game in valid_games]
+	ids = [int(gam.split(" ")[1]) for gam in valid_games]
 	return ids
+
+
+def gleamingthecube_again(data:list)->list:
+	valid_games = []
+	for game in data:
+		cube_d = {
+			"red":0,
+			"green":0,
+			"blue":0,
+		}
+		rolls = game[1].split(";")
+		for roll in rolls:
+			roll = roll.split(",")
+			for cube in roll:
+				cube = cube.strip()
+				count, color = cube.split(" ")
+				if cube_d[color] < int(count):
+					cube_d[color] = int(count)
+		valid_games.append(list(cube_d.values()))
+	powers = [np.prod(gam) for gam in valid_games]
+
+	return powers
 
 @log_time
 def run_part_A():
-	data = data_load("test_data")
+	data = data_load("data")
 	game_ids = gleamingthecube(data)
 	return sum(game_ids)
 
 @log_time
 def run_part_B():
-	data = data_load()
+	data = data_load("data")
+	game_ids = gleamingthecube_again(data)
+	return sum(game_ids)
 	
 print(f"Part A solution: \n{run_part_A()}\n")
-# print(f"Part B solution: \n{run_part_B()}\n")
+print(f"Part B solution: \n{run_part_B()}\n")
 print(f"Lines of code \n{recurse_dir(DAY)}")
 
 ########################################################
