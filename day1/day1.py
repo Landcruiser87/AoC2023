@@ -1,10 +1,9 @@
 import os
 import sys
-
-root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(root_folder)
 from utils.time_run import log_time
 from utils.loc import recurse_dir
+root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(root_folder)
 
 def data_load(filen:str)->list:
 	with open(f'./day1/{filen}.txt', 'r') as f:
