@@ -73,6 +73,8 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 #Goal
 #Sum the game indices that are valid. 
 #Or job is to invalidate games that don't
-#contain the possible counts of how many cubes
-#are in the bag. There are multiple grabs into the bag
-#during one game.  
+#So we want the possible color counts to the
+#the max of whatever we see pulled out in each turn of the 1 round. 
+
+#Part B Notes
+#this time we multiply the max counts of each bag and return that instead
