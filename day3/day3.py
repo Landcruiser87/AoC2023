@@ -10,52 +10,42 @@ DAY = './day3/'
 def data_load(filen:str)->list:
 	with open(f'{DAY}{filen}.txt', 'r') as f:
 		data = f.read().splitlines()
-		arr = [x if x != "" else "" for x in data]
+		arr = [x.strip() if x != "" else "" for x in data]
 	return arr
 
-def get_full_num(data:list, loc:tuple)->int:
-	row = loc[0]
-	col = loc[1]
-	idxleft, idxright = 0, 0
-	#BUG has to be here. 
-	while (data[row][col+idxleft].isnumeric()) and (not col+idxleft <= 0):
-		idxleft -= 1  
-	while data[row][col+idxright].isnumeric() and col+idxright <= len(data[row]):
-		idxright += 1
-	
-	temp = data[row][col+idxleft:col+idxright]
-	temp = "".join([x for x in temp if x.isalnum()])
-	return int(temp)
-
-def adjacent_nums(data, char_idx:list):
-	x_ran = range(-1, 2)
-	y_ran = range(-1, 2)
-	full_num = []
-	char_pile = deque(char_idx)
-	#Iterate the rows and look for numbers. 
-	while char_pile:
-		char = char_pile.popleft()
-		for row in x_ran:
-			for col in y_ran:
-				if data[char[0]+row][char[1]+col].isnumeric():
-					temp_num = get_full_num(data, (char[0]+row, char[1]+col))
-					if temp_num not in full_num:
-						full_num.append(temp_num)
-	return full_num
 
 def engine_parts(data:list, part:str)->list:
-	char_idxs = []
-	#Iterate the grid
-	for row in data:
-		for ch in row:
-			#test to see if the value is numeric or not a period.
-			#Should trap all characters we want
-			#append their tuple locaton to char_idxs
-			if (not ch.isnumeric()) and (ch != "."):
-				char_idxs.append((data.index(row), row.index(ch)))
+	left_num_idxs = set()
+	part_numbers = []
+	#Iterate the grid. If any non alphanumerics found, iterate again in 1 square space.
+	#If any numbers are found, Step left to the beginning of the number. 
+	#Store numeric location as tuple (row, col)
+	for row, line in enumerate(data):
+		for col, ch in enumerate(line):
+			#If its a digit or period, move on and don't analyze it
+			if (ch.isdigit()) | (ch == "."):
+				continue
 
-	#Test to see if adjacent numbers have a character neighbor
-	part_numbers = adjacent_nums(data, char_idxs)
+			#If its a nonalphanumeric.  Search nearby coordinates
+			for xmov in [row - 1, row, row + 1]:
+				for ymov in [col - 1, col, col + 1]:
+					# If we didn't violate the grid shape and the number is a digit, continue
+					if (xmov < 0) or (xmov >= len(data)) or (ymov < 0) or (ymov >= len(data[xmov])) or not data[xmov][ymov].isdigit():
+						continue
+					#Step left to find the start of each valid number
+					while ymov > 0 and data[xmov][ymov-1].isdigit():
+						ymov -= 1
+					left_num_idxs.add((xmov,ymov))
+
+	num_pile = deque(left_num_idxs)
+	while num_pile:
+		x, y = num_pile.popleft()
+		res = ""
+		while y < len(data[x]) and data[x][y].isdigit():
+			res = res + data[x][y]
+			y += 1
+		part_numbers.append(int(res))
+
 	return part_numbers
 
 @log_time
@@ -80,3 +70,5 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 #engine schematics.  Any number that is seated next to an non-alphanumeric
 #is a part number.  sum up all the part numbers. 
 #need a function to return when a part number is adjacent to a symbol
+
+#209270 is wrong.  Not getting a high enough count.  Fak
