@@ -19,31 +19,48 @@ def eval_cards(data:list, part:str):
 		6:32, 7:64, 8:128, 9:256, 10:512
 	}
 	if part == "B":
-		card_dict = {card_num.split(":")[0]:0 for card_num in data}
+		card_dict = {card_num.split(":")[0].split()[0] + " " + card_num.split(":")[0].split()[1]:1 for card_num in data}
+
 	for card in data:
-		_, nums = card.split(":")
+		card_num, nums = card.split(":")
 		winning, drawn = nums.split("|")
 		#Find intersection of winning and drawn with sets
 		wins = set(winning.split()) & set(drawn.split())
-		
 		if len(wins) > 0:
 			pts_list.append(score_dict[len(wins)])
 
-	return pts_list
+		if part == "B":
+			_, car_id = card_num.split()
+			#Get the current count at this round of how many cards you have
+			curr_count = card_dict[f"Card {int(car_id)}"]
+			#Iterate thruogh the current card counts to yield card win rewards
+			#The plus 1 is for the intial card in each round
+			while curr_count > 0:
+				for car in range(len(wins)):
+					card_dict[f"Card {int(car_id) + car + 1}"] += 1
+				curr_count -= 1
+
+	if part == "A":
+		return pts_list
+	
+	elif part == "B":
+		stack_count = list(card_dict.values())
+		return stack_count
+	
 @log_time
 def run_part_A():
-	data = data_load("test_data")
+	data = data_load("data")
 	winning_cards = eval_cards(data, "A")
 	return sum(winning_cards)
 
 @log_time
 def run_part_B():
-	data = data_load("test_data")
+	data = data_load("data")
 	winning_cards = eval_cards(data, "B")
 	return sum(winning_cards)
 	
 print(f"Part A solution: \n{run_part_A()}\n")
-# print(f"Part B solution: \n{run_part_B()}\n")
+print(f"Part B solution: \n{run_part_B()}\n")
 print(f"Lines of code \n{recurse_dir(DAY)}")
 
 ########################################################
