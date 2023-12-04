@@ -18,7 +18,7 @@ def engine_parts(data:list, part:str)->list:
 	#gameplan
 	#Iterate the grid. If any non alphanumerics found, iterate again in 1 square space.
 	#If any numbers are found, Step left to the beginning of the number. 
-	#Store numeric location as tuple (row, col)
+	#Then step right to the end of the number. Add to a set as I could hit the same number twice 
 	part_numbers = []
 	for row, line in enumerate(data):
 		for col, ch in enumerate(line):
@@ -46,7 +46,7 @@ def engine_parts(data:list, part:str)->list:
 
 			if part == "A":
 				part_numbers.extend(list(gear_numbers))
-				
+
 			if part == "B" and len(gear_numbers) == 2:
 				part_numbers.append(np.prod(list(gear_numbers)))
 				

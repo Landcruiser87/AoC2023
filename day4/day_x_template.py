@@ -5,7 +5,7 @@ sys.path.append(root_folder)
 from utils.time_run import log_time
 from utils.loc import recurse_dir
 
-DAY = './day1/'
+DAY = './day4/'
 def data_load(filen:str)->list:
 	with open(f'{DAY}{filen}.txt', 'r') as f:
 		data = f.read().splitlines()
@@ -27,4 +27,6 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 
 ########################################################
 #Notes
+#Scratchcards
+
 #Part A Notes
