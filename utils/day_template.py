@@ -9,20 +9,19 @@ DAY = './day/'
 def data_load(filen:str)->list:
 	with open(f'{DAY}{filen}.txt', 'r') as f:
 		data = f.read().splitlines()
-		arr = [x if x != "" else "" for x in data]
+		arr = [x.strip() if x != "" else "" for x in data]
 	return arr
 
 @log_time
-def run_part_A():
+def part_A():
 	data = data_load()
-
 
 @log_time
-def run_part_B():
+def part_B():
 	data = data_load()
 	
-print(f"Part A solution: \n{run_part_A()}\n")
-print(f"Part B solution: \n{run_part_B()}\n")
+print(f"Part A solution: \n{part_A()}\n")
+print(f"Part B solution: \n{part_B()}\n")
 print(f"Lines of code \n{recurse_dir(DAY)}")
 
 ########################################################

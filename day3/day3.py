@@ -78,8 +78,8 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 #need a function to return when a part number is adjacent to a symbol
 
 #209270 is wrong.  Not getting a high enough count.  Fak
-
 #I apparently can't loop over the nonalphanumeric indexes.  Need to stay in the main loop to avoid double entry
+
 #Part B Notes. 
 #Now, if any nonalphanumeric is sitting next to EXACTLY TWO numbers. 
 #mutiply them together and add them to the part numbers list. 

@@ -48,19 +48,19 @@ def eval_cards(data:list, part:str):
 		return list(card_dict.values())
 	
 @log_time
-def run_part_A():
+def part_A():
 	data = data_load("data")
 	winning_cards = eval_cards(data, "A")
 	return sum(winning_cards)
 
 @log_time
-def run_part_B():
+def part_B():
 	data = data_load("data")
 	winning_cards = eval_cards(data, "B")
 	return sum(winning_cards)
 	
-print(f"Part A solution: \n{run_part_A()}\n")
-print(f"Part B solution: \n{run_part_B()}\n")
+print(f"Part A solution: \n{part_A()}\n")
+print(f"Part B solution: \n{part_B()}\n")
 print(f"Lines of code \n{recurse_dir(DAY)}")
 
 ########################################################
