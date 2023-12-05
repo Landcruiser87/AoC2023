@@ -14,11 +14,13 @@ def data_load(filen:str)->list:
 
 def eval_cards(data:list, part:str):
 	pts_list = []
+	# I know i could do exp for the scoring but dictionaries are more fun
 	score_dict = {
 		1:1, 2:2, 3:4, 4:8, 5:16,
 		6:32, 7:64, 8:128, 9:256, 10:512
 	}
 	if part == "B":
+		#Initalize dict with 1 counts to recognize base cards
 		card_dict = {card_num.split(":")[0].split()[0] + " " + card_num.split(":")[0].split()[1]:1 for card_num in data}
 
 	for card in data:
@@ -34,7 +36,6 @@ def eval_cards(data:list, part:str):
 			#Get the current count at this round of how many cards you have
 			curr_count = card_dict[f"Card {int(car_id)}"]
 			#Iterate thruogh the current card counts to yield card win rewards
-			#The plus 1 is for the intial card in each round
 			while curr_count > 0:
 				for car in range(len(wins)):
 					card_dict[f"Card {int(car_id) + car + 1}"] += 1
@@ -44,8 +45,7 @@ def eval_cards(data:list, part:str):
 		return pts_list
 	
 	elif part == "B":
-		stack_count = list(card_dict.values())
-		return stack_count
+		return list(card_dict.values())
 	
 @log_time
 def run_part_A():
