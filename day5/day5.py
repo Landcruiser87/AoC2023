@@ -5,9 +5,8 @@ sys.path.append(root_folder)
 from utils.time_run import log_time
 from utils.loc import recurse_dir
 from collections import deque
-
+from itertools import chain
 DAY = './day5/'
-
 def append_dict(dict_obj:dict, key:str, title:str, val:list):
 	"""Appends a value to a dictionary.  If the key already exists, it appends the value to the list.
 
@@ -47,7 +46,7 @@ def data_load(filen:str)->list:
 				append_dict(mappings, "source_vals", title, range(maps[1], maps[1] + maps[2]))
 	return seeds, mappings
 
-def transformation_station(seed:int, mappings:dict, actions:list):
+def transformation_station(seed:int, mappings:dict, actions:list)->int:
 	trans_val = [seed]
 	for action in actions:
 		s_ranges = list(mappings[action]["source_vals"])
@@ -62,26 +61,39 @@ def transformation_station(seed:int, mappings:dict, actions:list):
 			trans_val.append(trans_val[-1])
 	return trans_val[-1]
 	
-def garden_search(seeds:str, mappings:dict):
+def garden_search(seeds:str, mappings:dict, part:str)->int:
 	#Generates locations for each seed. 
 	lowpts = []
 	transfer_states = list(mappings.keys())
-	for seed in seeds:
-		lowpts.append(transformation_station(seed, mappings, transfer_states))
-	return lowpts
+	if part == "A":
+		for seed in seeds:
+			lowpts.append(transformation_station(seed, mappings, transfer_states))
+		return lowpts
+	elif part == "B":
+		lowpt = 10_000_000_000
+		for seedrange in seeds:
+			for seed in (seedrange[0], seedrange[-1]):
+				low = transformation_station(seed, mappings, transfer_states)
+				if low < lowpt:
+					lowpt = low
+		return lowpt
 
 @log_time
 def part_A():
 	seeds, mappings = data_load("data")
-	locations = garden_search(seeds, mappings)
+	locations = garden_search(seeds, mappings, "A")
 	return min(locations)
 
 @log_time
 def part_B():
-	data = data_load()
+	seeds, mappings = data_load("data")
+	seeds = [range(seeds[x], seeds[x] + seeds[x+1]) for x in range(0, len(seeds), 2)]
+	location = garden_search(seeds, mappings, "B")
+	return location
+
 	
 print(f"Part A solution: \n{part_A()}\n")
-# print(f"Part B solution: \n{part_B()}\n")
+print(f"Part B solution: \n{part_B()}\n")
 print(f"Lines of code \n{recurse_dir(DAY)}")
 
 ########################################################
