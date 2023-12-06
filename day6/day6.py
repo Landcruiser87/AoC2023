@@ -44,14 +44,14 @@ def calc_win_times(data:list, part:str):
 @log_time
 def part_A():
 	data = data_load("data")
-	winningtimes = calc_win_times(data, "A")
-	return np.prod(winningtimes)
+	wincounts = calc_win_times(data, "A")
+	return np.prod(wincounts)
 
 @log_time
 def part_B():
 	data = data_load("data")
-	winningtimes = calc_win_times(data, "B")
-	return np.prod(winningtimes)
+	wincounts = calc_win_times(data, "B")
+	return np.prod(wincounts)
 	
 print(f"Part A solution: \n{part_A()}\n")
 print(f"Part B solution: \n{part_B()}\n")
