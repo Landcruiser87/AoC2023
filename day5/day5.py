@@ -77,7 +77,6 @@ def garden_search(seeds:list, mappings:dict, part:str):
 			order = "dest_start", "source_start", "range_length"
 			ranges_to_test = [mappings[transfer][key] for key in order]
 			ranges_to_test = list(zip(*ranges_to_test))
-
 			seeds_dos = []
 			while len(seeds) > 0:
 				seedrange = seeds.pop()
@@ -130,4 +129,6 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 #So now the input seeds are actually ranges. 
 #Making our seed posibility huge.  Meaning we can't use a list for 
 #holding the low points because of the memory overflow. 
-
+#Trick here was finding the overlapping ranges to tell whether or 
+# not the boundaries of a range were even applicaable for a lowpoint
+#That was hard as fuck. 
