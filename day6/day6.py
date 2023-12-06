@@ -19,20 +19,20 @@ def calc_win_times(data:list, part:str):
 	if part == "A":
 		times = [int(x) for x in data[0].split(":")[1].strip().split()]
 		distances = [int(x) for x in data[1].split(":")[1].strip().split()]
-		for race_time in times:
-			for holdtime in range(1, race_time - 1):
-				rate = race_time - holdtime
+		for best_race_t in times:
+			for holdtime in range(1, best_race_t - 1):
+				rate = best_race_t - holdtime
 				distancetraveled = holdtime * rate
-				if distancetraveled > distances[times.index(race_time)] :
+				if distancetraveled > distances[times.index(best_race_t)] :
 					racewins += 1
 			wins.append(racewins)
 			racewins = 0
 
 	elif part == "B":
-		race_time = int("".join([x for x in data[0].split(":")[1].strip() if x.isdigit()]))
+		best_race_t = int("".join([x for x in data[0].split(":")[1].strip() if x.isdigit()]))
 		distance = int("".join([x for x in data[1].split(":")[1].strip() if x.isdigit()]))
-		for holdtime in range(1, race_time - 1):
-			rate = race_time - holdtime
+		for holdtime in range(1, best_race_t - 1):
+			rate = best_race_t - holdtime
 			distancetraveled = holdtime * rate
 			if distancetraveled > distance:
 				racewins += 1
