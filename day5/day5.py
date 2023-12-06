@@ -61,8 +61,8 @@ def transformation_station(seed:int, mappings:dict, actions:list)->int:
 		if not found:
 			trans_val.append(trans_val[-1])
 	return trans_val[-1]
-	
-def garden_search(seeds:str, mappings:dict, part:str):
+
+def garden_search(seeds:list, mappings:dict, part:str):
 	#Generates locations for each seed. 
 	transfer_states = list(mappings.keys())
 	if part == "A":
@@ -72,30 +72,33 @@ def garden_search(seeds:str, mappings:dict, part:str):
 		return lowpts
 	
 	elif part == "B":
-		lowpt = None
-		for seedrange in seeds:
-			for seed in seedrange:
-				rob_lowe = transformation_station(seed, mappings, transfer_states)
-				if lowpt is None or rob_lowe < lowpt:
-					lowpt = rob_lowe
-		return lowpt
-	
-def merge_ranges(seeds:list)->list:
-	#Merge ranges together 
-	#Borrowed interval merging from geeks for geeks
-	# https://www.geeksforgeeks.org/merging-intervals/
-	seed_max_min = [list([rng[0], rng[-1]]) for rng in seeds]
-	seed_max_min.sort(key=lambda x:x[0])
-	idx = 0
-	for i in range(1, len(seed_max_min)):
-		if (seed_max_min[idx][1] >= seed_max_min[i][0]):
-			seed_max_min[idx][1] = max(seed_max_min[idx][1], seed_max_min[i][1])
-		else:
-			idx = idx + 1
-			seed_max_min[idx] = seed_max_min[i]
+		transfers = list(mappings.keys())
+		for transfer in transfers:
+			order = "dest_start", "source_start", "range_length"
+			ranges_to_test = [mappings[transfer][key] for key in order]
+			ranges_to_test = list(zip(*ranges_to_test))
 
-	seed_max_min = [range(rng[0], rng[-1]) for rng in seed_max_min]
-	return seed_max_min
+			seeds_dos = []
+			while len(seeds) > 0:
+				seedrange = seeds.pop()
+				start, end = seedrange.start, seedrange.stop
+				for dest, source, length in ranges_to_test:
+					start_olap = max(start, source)
+					end_olap = min(end, source + length)
+
+					if start_olap < end_olap:
+						seeds_dos.append(range(start_olap - source + dest, end_olap - source + dest))
+						if start_olap > start:
+							seeds.append(range(start, start_olap))
+						if end_olap < end:
+							seeds.append(range(end_olap, end))
+						break
+				else:
+					seeds_dos.append(range(start, end))
+			seeds = seeds_dos
+		
+		lowpt = min(seed[0] for seed in seeds)
+		return lowpt
 
 @log_time
 def part_A()->int:
@@ -107,7 +110,6 @@ def part_A()->int:
 def part_B()->int:
 	seeds, mappings = data_load("data")
 	seeds = [range(seeds[x], seeds[x] + seeds[x+1]-1) for x in range(0, len(seeds), 2)]
-	seeds = merge_ranges(seeds)
 	location = garden_search(seeds, mappings, "B")
 	return location
 
