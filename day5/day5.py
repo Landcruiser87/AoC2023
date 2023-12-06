@@ -6,6 +6,7 @@ from utils.time_run import log_time
 from utils.loc import recurse_dir
 from collections import deque
 from itertools import chain
+
 DAY = './day5/'
 def append_dict(dict_obj:dict, key:str, title:str, val:list):
 	"""Appends a value to a dictionary.  If the key already exists, it appends the value to the list.
@@ -61,33 +62,52 @@ def transformation_station(seed:int, mappings:dict, actions:list)->int:
 			trans_val.append(trans_val[-1])
 	return trans_val[-1]
 	
-def garden_search(seeds:str, mappings:dict, part:str)->int:
+def garden_search(seeds:str, mappings:dict, part:str):
 	#Generates locations for each seed. 
-	lowpts = []
 	transfer_states = list(mappings.keys())
 	if part == "A":
+		lowpts = []
 		for seed in seeds:
 			lowpts.append(transformation_station(seed, mappings, transfer_states))
 		return lowpts
+	
 	elif part == "B":
-		lowpt = 10_000_000_000
+		lowpt = None
 		for seedrange in seeds:
-			for seed in (seedrange[0], seedrange[-1]):
-				low = transformation_station(seed, mappings, transfer_states)
-				if low < lowpt:
-					lowpt = low
+			for seed in seedrange:
+				rob_lowe = transformation_station(seed, mappings, transfer_states)
+				if lowpt is None or rob_lowe < lowpt:
+					lowpt = rob_lowe
 		return lowpt
+	
+def merge_ranges(seeds:list)->list:
+	#Merge ranges together 
+	#Borrowed interval merging from geeks for geeks
+	# https://www.geeksforgeeks.org/merging-intervals/
+	seed_max_min = [list([rng[0], rng[-1]]) for rng in seeds]
+	seed_max_min.sort(key=lambda x:x[0])
+	idx = 0
+	for i in range(1, len(seed_max_min)):
+		if (seed_max_min[idx][1] >= seed_max_min[i][0]):
+			seed_max_min[idx][1] = max(seed_max_min[idx][1], seed_max_min[i][1])
+		else:
+			idx = idx + 1
+			seed_max_min[idx] = seed_max_min[i]
+
+	seed_max_min = [range(rng[0], rng[-1]) for rng in seed_max_min]
+	return seed_max_min
 
 @log_time
-def part_A():
+def part_A()->int:
 	seeds, mappings = data_load("data")
 	locations = garden_search(seeds, mappings, "A")
 	return min(locations)
 
 @log_time
-def part_B():
+def part_B()->int:
 	seeds, mappings = data_load("data")
-	seeds = [range(seeds[x], seeds[x] + seeds[x+1]) for x in range(0, len(seeds), 2)]
+	seeds = [range(seeds[x], seeds[x] + seeds[x+1]-1) for x in range(0, len(seeds), 2)]
+	seeds = merge_ranges(seeds)
 	location = garden_search(seeds, mappings, "B")
 	return location
 
@@ -103,4 +123,9 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 #Our job is to find the lowest location of where to plant but we have to transform from a seed locatino through
 #various mappings to get the right location.
 #Probably use a dictionary of dicts for the mappings
-  
+
+#Part B Notes
+#So now the input seeds are actually ranges. 
+#Making our seed posibility huge.  Meaning we can't use a list for 
+#holding the low points because of the memory overflow. 
+
