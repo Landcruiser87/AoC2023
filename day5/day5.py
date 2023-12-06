@@ -87,7 +87,7 @@ def garden_search(seeds:list, mappings:dict, part:str):
 
 					if start_olap < end_olap:
 						seeds_dos.append(range(start_olap - source + dest, end_olap - source + dest))
-						if start_olap > start:
+						if start_olap > start:	
 							seeds.append(range(start, start_olap))
 						if end_olap < end:
 							seeds.append(range(end_olap, end))
@@ -107,7 +107,7 @@ def part_A()->int:
 
 @log_time
 def part_B()->int:
-	seeds, mappings = data_load("data")
+	seeds, mappings = data_load("test_data")
 	seeds = [range(seeds[x], seeds[x] + seeds[x+1]-1) for x in range(0, len(seeds), 2)]
 	location = garden_search(seeds, mappings, "B")
 	return location
@@ -131,4 +131,6 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 #holding the low points because of the memory overflow. 
 #Trick here was finding the overlapping ranges to tell whether or 
 # not the boundaries of a range were even applicaable for a lowpoint
+#If you go backwards through the seed list (hence the pop), you can find the 
+#overlaps faster in the boundaries of the source/dest ranges. 
 #That was hard as fuck. 
