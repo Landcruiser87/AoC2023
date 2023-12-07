@@ -54,7 +54,8 @@ def score_hands(data:list):
 		order.append(hand_strength)
 
 	order.sort(key=lambda x:x[2], reverse=True)
-	return order
+
+	return order, {k:v for k, v in data}
 
 def resolve_ties(hands:list):
 	#Get the counts of the hands
@@ -93,19 +94,16 @@ def resolve_ties(hands:list):
 					orderzip = sorted(ties_map, key=lambda x:x[idx], reverse=True)
 					map_order = ["".join([rev_map[ch] for ch in lilhand]) for lilhand in orderzip]
 					break
-				
 			#Get indexes of current map orders
 			#Assign them to a temp switch dict. 
 			#Swich them vals. 
-			
 			old_idx = [hand_list.index(x) for x in map_order]
-			for idx_new in range(len(map_order) - 1):
+			if ties != map_order:			
+				for idx_new in range(len(map_order) - 1):
+					hands = swap_places(hands, old_idx[idx_new], idx_new)
 
-				hands = swap_places(hands, old_idx[idx_new], idx_new)
+	return hands[::-1]
 
-			#Now reindex the correct order for that count in the hands object. 
-			print("fun")
-	return hand_list
 def swap_places(src_list:list, i:int, j:int)->list:
 	elem_i = src_list[i]
 	elem_j = src_list[j]
@@ -114,8 +112,12 @@ def swap_places(src_list:list, i:int, j:int)->list:
 
 	return src_list
 
-def calc_wins():
-	pass
+def calc_wins(ordered:list, bid_dict):
+	score = []
+	for idx, hand in enumerate(ordered):
+		handid = hand[0]
+		score.append(bid_dict[handid]*(idx+1))
+	return score
 
 def pokertown(data:list, part:str):
 	#1. Calculate hand strengths
@@ -123,9 +125,9 @@ def pokertown(data:list, part:str):
 	#3. Resolve Ties
 	#4. Multiply bid by its rank
 
-	hand_st = score_hands(data)		
-	ties = resolve_ties(hand_st)
-	totalwinnings = calc_wins(ties)
+	hand_st, bid_dict = score_hands(data)		
+	ordered = resolve_ties(hand_st)
+	totalwinnings = calc_wins(ordered, bid_dict)
 	return totalwinnings
 
 @log_time
