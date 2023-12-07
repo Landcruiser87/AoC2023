@@ -15,7 +15,7 @@ def data_load(filen:str)->list:
 	return arr
 
 def calc_win_times(data:list, part:str):
-	racewins, wins = 0, []
+	racewins, wins = 0, 0
 	if part == "A":
 		times = [int(x) for x in data[0].split(":")[1].strip().split()]
 		distances = [int(x) for x in data[1].split(":")[1].strip().split()]
@@ -25,7 +25,7 @@ def calc_win_times(data:list, part:str):
 				distancetraveled = holdtime * rate
 				if distancetraveled > distances[times.index(best_race_t)] :
 					racewins += 1
-			wins.append(racewins)
+			prod *= racewins
 			racewins = 0
 
 	elif part == "B":
