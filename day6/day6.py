@@ -4,8 +4,6 @@ root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__
 sys.path.append(root_folder)
 from utils.time_run import log_time
 from utils.loc import recurse_dir
-import numpy as np
-
 
 DAY = './day6/'
 def data_load(filen:str)->list:
@@ -45,13 +43,13 @@ def calc_win_times(data:list, part:str):
 def part_A():
 	data = data_load("data")
 	wincounts = calc_win_times(data, "A")
-	return np.prod(wincounts)
+	return wincounts
 
 @log_time
 def part_B():
 	data = data_load("data")
 	wincounts = calc_win_times(data, "B")
-	return np.prod(wincounts)
+	return wincounts
 	
 print(f"Part A solution: \n{part_A()}\n")
 print(f"Part B solution: \n{part_B()}\n")
