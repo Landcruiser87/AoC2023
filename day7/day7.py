@@ -39,9 +39,6 @@ def swap_jokers():
 def score_hands(data:list, part:str):
 	order = []
 	for hand, _ in data:
-		# if hand == "246A7":
-		# 	print('wait wait wait')
-
 		counts = list(Counter(hand).values())
 		if part == "B":
 			if "J" in hand:
@@ -67,8 +64,6 @@ def score_hands(data:list, part:str):
 		else:
 			hand_strength = (hand, HAND_ORDER[0], 0)
 		order.append(hand_strength)
-		# if "J" in hand:
-		# 	print(f"{hand}-->{hand_strength[1]}")
 	order.sort(key=lambda x:x[2], reverse=True)
 	return order, {k:v for k, v in data}
 
@@ -118,7 +113,7 @@ def resolve_ties(hands:list):
 	counts = Counter(x[1] for x in hands)
 	rev_map = {v:k for k, v in CARD_ORDER.items()}
 	hand_list = [x[0] for x in hands]
-	#Had to keep the set calcs to make sure the order stayed the same.  I could take the keys of the counts
+	#Had to keep the set calcs to make sure the order stayed the same.
 	hand_types = sorted((set([(x[1],x[2]) for x in hands])), key=lambda y:y[1], reverse=True)
 	hand_types = [x[0] for x in hand_types]
 
@@ -154,7 +149,6 @@ def pokertown(data:list, part:str):
 	hand_st, bid_dict = score_hands(data, part)
 	ordered = resolve_ties(hand_st)
 	totalwinnings = calc_wins(ordered, bid_dict)
-
 	return totalwinnings
 
 @log_time
@@ -191,7 +185,6 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 #255710028
 #254281054  
 #247869019
-#247823654 #Winner!Lol
 
 #Part B Notes. 
 #ooook.  Now jacks are jokers and have a weight value of 0. Jokers are also wild
@@ -204,4 +197,3 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 # 245557617 -> too high
 # 245893562 -> too high
 # 245557617
-# 245461700 #Winner!  
