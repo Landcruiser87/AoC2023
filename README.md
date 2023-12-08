@@ -14,4 +14,4 @@ These are my solutions for the [Advent of Code 2023](https://adventofcode.com/20
 | 04  | ⭐⭐ | [Day4](https://github.com/Landcruiser87/AoC2023/blob/main/day4/day4.py) |[Scratchcards](https://adventofcode.com/2023/day/4) | 2.000 ms | 4.83 s | 50 |
 | 05  | ⭐⭐ | [Day5](https://github.com/Landcruiser87/AoC2023/blob/main/day5/day5.py) |[If You Give A Seed A Fertilizer](https://adventofcode.com/2023/day/5) | 1.003 ms | 5.001 ms | 130 |
 | 06  | ⭐⭐ | [Day6](https://github.com/Landcruiser87/AoC2023/blob/main/day6/day6.py) |[Wait For It](https://adventofcode.com/2023/day/6) | 0.0000 ns | 7.17 s | 50 |
-
+| 07  | ⭐⭐ | [Day7](https://github.com/Landcruiser87/AoC2023/blob/main/day7/day7.py) |[Wait For It](https://adventofcode.com/2023/day/7) | 14.999 ms | 16.001 | 179 |

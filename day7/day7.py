@@ -29,6 +29,13 @@ def data_load(filen:str)->list:
 		arr = [(x[0],int(x[1])) for x in arr]
 	return arr
 
+def swap_jokers():
+	global CARD_ORDER
+	CARD_ORDER = {
+		"2":1, "3":2, "4":3, "5":4, "6":5, "7":6, "8":7, "9":8,
+		"T":9,"J":0,"Q":10, "K":11, "A":12
+	}
+
 def score_hands(data:list, part:str):
 	order = []
 	for hand, _ in data:
@@ -67,22 +74,20 @@ def score_hands(data:list, part:str):
 
 def joker_upgrade(hand:str, counts:dict):
 	j_howmany = hand.count("J")
-	#if they're all J.  
-	#WHICH of course there is only one case of in the test set. Lmao.  YOU TURD ERIC
 	#Catch one edge case for all J's.  
 	if j_howmany == 5:
-		return [1, 1, 1, 1, 1]
+		return [5]
 	
 	#5 of a kind case
 	elif 4 in counts and j_howmany == 1:
 		idx = counts.index(4)
-		counts[idx] += j_howmany
+		counts[idx] += 1
 
 	#4 of a kind case
-	elif 3 in counts and j_howmany <= 3:
+	elif 3 in counts and j_howmany <= 2:
 		#3 of some kind with 2 J's
 		idx = counts.index(3)
-		if j_howmany <=2:
+		if j_howmany <= 2:
 			#have 3 of some kind with 2 J's
 				#Boosts to 5 of a kind
 			#have 3 of some other kind with 1 J
@@ -93,25 +98,18 @@ def joker_upgrade(hand:str, counts:dict):
 				#Boosts to 5 of a kind
 			if 2 in counts:
 				counts[counts.index(2)] += j_howmany
-				print("weeee")
+				#Happens twice
 
-	elif 2 in counts and j_howmany <= 2:
+	elif 2 in counts and j_howmany <= 3:
 		idx = counts.index(2)
-		if j_howmany == 3:
-			print('whoa fun!')
-
-		elif j_howmany == 2 and counts.count(2) == 1:
+		if j_howmany <= 2 and counts.count(2) == 1:
 			counts[idx] += 1
 		else:
 			counts[idx] += j_howmany	
 
-	elif 1 in counts and j_howmany <= 4:
+	elif 1 in counts:
 		idx = counts.index(1)
-		if j_howmany != 1:
-			counts[idx] += j_howmany
-		
-		elif j_howmany == 1:
-			counts[idx] +=  1
+		counts[idx] += j_howmany
 
 	return counts
 
@@ -145,14 +143,6 @@ def calc_wins(ordered:list, bid_dict):
 		score.append(bid_dict[handid]*(idx+1))
 	return score
 
-def swap_jokers():
-	global CARD_ORDER
-	CARD_ORDER = {
-		"2":1, "3":2, "4":3, "5":4, "6":5, "7":6, "8":7, "9":8,
-		"T":9,"J":0,"Q":10, "K":11, "A":12
-	}
-
-
 def pokertown(data:list, part:str):
 	#1. Calculate hand strengths
 	#2. Decide order by HAND_ORDER
@@ -169,7 +159,7 @@ def pokertown(data:list, part:str):
 
 @log_time
 def part_A():
-	data = data_load("test_data")
+	data = data_load("data")
 	totalwinnings = pokertown(data, "A")
 	return sum(totalwinnings)
 
@@ -213,3 +203,5 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 # 245908369 -> too high
 # 245557617 -> too high
 # 245893562 -> too high
+# 245557617
+# 245461700 #Winner!  
