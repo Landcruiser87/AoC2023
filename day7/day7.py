@@ -32,12 +32,13 @@ def data_load(filen:str)->list:
 def score_hands(data:list, part:str):
 	order = []
 	for hand, _ in data:
-		if hand == "246A7":
-			print('wait wait wait')
+		# if hand == "246A7":
+		# 	print('wait wait wait')
 
 		counts = list(Counter(hand).values())
 		if part == "B":
-			counts = joker_upgrade(hand, counts)
+			if "J" in hand:
+				counts = joker_upgrade(hand, counts)
 		if 5 in counts:
 			hand_strength = (hand, HAND_ORDER[6], 6)
 		elif 4 in counts:
@@ -59,68 +60,58 @@ def score_hands(data:list, part:str):
 		else:
 			hand_strength = (hand, HAND_ORDER[0], 0)
 		order.append(hand_strength)
-
+		# if "J" in hand:
+		# 	print(f"{hand}-->{hand_strength[1]}")
 	order.sort(key=lambda x:x[2], reverse=True)
 	return order, {k:v for k, v in data}
 
 def joker_upgrade(hand:str, counts:dict):
-	#Will need to rewrite logic to reassign scoring level. 
-	if "J" in hand:
-		print(hand)
-		if hand == '66JQ6':
-			print('wait wait wait')
-		howmany = hand.count("J")
+	j_howmany = hand.count("J")
+	#if they're all J.  
+	#WHICH of course there is only one case of in the test set. Lmao.  YOU TURD ERIC
+	#Catch one edge case for all J's.  
+	if j_howmany == 5:
+		return [1, 1, 1, 1, 1]
+	
+	#5 of a kind case
+	elif 4 in counts and j_howmany == 1:
+		idx = counts.index(4)
+		counts[idx] += j_howmany
 
-		#5 of a kind case
-		if 4 in counts and howmany == 1:
-			idx = counts.index(4)
-			counts[idx] += howmany
+	#4 of a kind case
+	elif 3 in counts and j_howmany <= 3:
+		#3 of some kind with 2 J's
+		idx = counts.index(3)
+		if j_howmany <=2:
+			#have 3 of some kind with 2 J's
+				#Boosts to 5 of a kind
+			#have 3 of some other kind with 1 J
+				#Boosts to 4 of a kind
+			counts[idx] += j_howmany
+		elif j_howmany == 3:
+			#Rare case but I have 3 J's that now boost the other 2 count to
+				#Boosts to 5 of a kind
+			if 2 in counts:
+				counts[counts.index(2)] += j_howmany
+				print("weeee")
 
-		#4 of a kind case
-		elif 3 in counts and howmany <= 3:
-			#3 of some kind with 2 J's
-			idx = counts.index(3)
-			if howmany <=2:
-				#have 3 of some kind with 2 J's
-					#Boosts to 5 of a kind
-				#have 3 of some other kind with 1 J
-					#Boosts to 4 of a kind
-				counts[idx] += howmany
+	elif 2 in counts and j_howmany <= 2:
+		idx = counts.index(2)
+		if j_howmany == 3:
+			print('whoa fun!')
 
-			elif howmany == 3:
-				#Rare case but I have 3 J's that now boost the other 2 count to
-					#Boosts to 5 of a kind
-				if 2 in counts:
-					counts[counts.index(2)] += howmany
-				
-				#BUG other cases are going to come here that i'm going to miss.  Lots of possibility
+		elif j_howmany == 2 and counts.count(2) == 1:
+			counts[idx] += 1
+		else:
+			counts[idx] += j_howmany	
 
-		elif 2 in counts and howmany <= 3:
-			idx = counts.index(2)
-			if howmany == 3:
-				print('whoa fun!')
-
-			elif howmany == 2 and counts.count(2) == 1:
-				counts[idx] += 1
-			else:
-				counts[idx] += howmany	
-
-		elif 1 in counts and howmany <= 4:
-			idx = counts.index(1)
-			if howmany == 4:
-				#boost to 5 of a kind
-				counts[idx] += howmany
-
-			elif howmany == 3:
-				#boost to 4 of a kind
-				counts[idx] += howmany
-
-			elif howmany == 2:
-				#boost to 3 of a kind
-				counts[idx] += howmany
-			
-			elif howmany == 1:
-				counts[idx] +=  1
+	elif 1 in counts and j_howmany <= 4:
+		idx = counts.index(1)
+		if j_howmany != 1:
+			counts[idx] += j_howmany
+		
+		elif j_howmany == 1:
+			counts[idx] +=  1
 
 	return counts
 
@@ -221,3 +212,4 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 #Nopes
 # 245908369 -> too high
 # 245557617 -> too high
+# 245893562 -> too high
