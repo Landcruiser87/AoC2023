@@ -32,6 +32,9 @@ def data_load(filen:str)->list:
 def score_hands(data:list, part:str):
 	order = []
 	for hand, _ in data:
+		if hand == "246A7":
+			print('wait wait wait')
+
 		counts = list(Counter(hand).values())
 		if part == "B":
 			counts = joker_upgrade(hand, counts)
@@ -58,31 +61,69 @@ def score_hands(data:list, part:str):
 		order.append(hand_strength)
 
 	order.sort(key=lambda x:x[2], reverse=True)
-
 	return order, {k:v for k, v in data}
 
 def joker_upgrade(hand:str, counts:dict):
+	#Will need to rewrite logic to reassign scoring level. 
 	if "J" in hand:
+		print(hand)
+		if hand == '66JQ6':
+			print('wait wait wait')
 		howmany = hand.count("J")
-		if 4 in counts:
+
+		#5 of a kind case
+		if 4 in counts and howmany == 1:
 			idx = counts.index(4)
-			counts[idx] += 1
+			counts[idx] += howmany
 
-		if 3 in counts:
+		#4 of a kind case
+		elif 3 in counts and howmany <= 3:
+			#3 of some kind with 2 J's
 			idx = counts.index(3)
-			counts[idx] += 1
-		if 2 in counts:
-			idx = counts.index(2)
-			counts[idx] += 1
+			if howmany <=2:
+				#have 3 of some kind with 2 J's
+					#Boosts to 5 of a kind
+				#have 3 of some other kind with 1 J
+					#Boosts to 4 of a kind
+				counts[idx] += howmany
 
-			if 1 in counts:
-				twop = 0
-				for count in counts:
-					if count==1:
-						twop += 1
-						break
+			elif howmany == 3:
+				#Rare case but I have 3 J's that now boost the other 2 count to
+					#Boosts to 5 of a kind
+				if 2 in counts:
+					counts[counts.index(2)] += howmany
+				
+				#BUG other cases are going to come here that i'm going to miss.  Lots of possibility
+
+		elif 2 in counts and howmany <= 3:
+			idx = counts.index(2)
+			if howmany == 3:
+				print('whoa fun!')
+
+			elif howmany == 2 and counts.count(2) == 1:
+				counts[idx] += 1
+			else:
+				counts[idx] += howmany	
+
+		elif 1 in counts and howmany <= 4:
+			idx = counts.index(1)
+			if howmany == 4:
+				#boost to 5 of a kind
+				counts[idx] += howmany
+
+			elif howmany == 3:
+				#boost to 4 of a kind
+				counts[idx] += howmany
+
+			elif howmany == 2:
+				#boost to 3 of a kind
+				counts[idx] += howmany
+			
+			elif howmany == 1:
+				counts[idx] +=  1
 
 	return counts
+
 def resolve_ties(hands:list):
 	#Get the counts of the hands
 	counts = Counter(x[1] for x in hands)
@@ -104,6 +145,7 @@ def resolve_ties(hands:list):
 			map_order = ["".join([rev_map[ch] for ch in lilhand]) for lilhand in orderzip]
 			for idx in tie_index:
 				hand_list[idx] = map_order.pop(0)
+
 	return hand_list[::-1]
 
 def calc_wins(ordered:list, bid_dict):
@@ -142,7 +184,7 @@ def part_A():
 
 @log_time
 def part_B():
-	data = data_load("test_data")
+	data = data_load("data")
 	totalwinnings = pokertown(data, "B")
 	return sum(totalwinnings)
 	
@@ -176,3 +218,6 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 #counts. Rest of the code should behave accordingly with the new
 #weight
 
+#Nopes
+# 245908369 -> too high
+# 245557617 -> too high
