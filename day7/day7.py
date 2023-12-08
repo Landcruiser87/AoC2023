@@ -30,21 +30,20 @@ def data_load(filen:str)->list:
 def score_hands(data:list):
 	order = []
 	for hand, _ in data:
-		counts = Counter(hand)
+		counts = list(Counter(hand).values())
 		#Use a Counter to calulate raw hand strengths.  Will resolve ties next
-		if any(x>4 for x in counts.values()):
+		if 5 in counts:
 			hand_strength = (hand, HAND_ORDER[6], 6)
-		elif any(x==4 for x in counts.values()):
+		elif 4 in counts:
 			hand_strength = (hand, HAND_ORDER[5], 5)
-		elif any((x==3) for x in counts.values()):
-			if any((x==2) for x in counts.values()):
+		elif 3 in counts:
+			if 2 in counts:
 				hand_strength = (hand, HAND_ORDER[4], 4)
 			else:
 				hand_strength = (hand, HAND_ORDER[3], 3)
-
-		elif any(x==2 for x in counts.values()):
+		elif 2 in counts:
 			twop = 0
-			for count in counts.values():
+			for count in counts:
 				if count==2:
 					twop += 1
 			if twop > 1:
@@ -54,7 +53,6 @@ def score_hands(data:list):
 		else:
 			hand_strength = (hand, HAND_ORDER[0], 0)
 		order.append(hand_strength)
-
 	order.sort(key=lambda x:x[2], reverse=True)
 
 	return order, {k:v for k, v in data}
@@ -70,37 +68,22 @@ def resolve_ties(hands:list):
 	hand_types = [x[0] for x in hand_types]
 
 	for handtype in hand_types:
-		if counts[handtype] >= 2:
+		if counts[handtype] >= 1:
 			# If you find any ties, find the winner
 			ties = [x[0] for x in hands if x[1]==handtype]
+			tie_index = [hand_list.index(x[0]) for x in hands if x[1]==handtype]
 			#Map all the characters to their values
 			ties_map = [[CARD_ORDER[ch] for ch in lilhand] for lilhand in ties]
 			#sort the list by all columns and reverse them
 			orderzip = sorted(ties_map, key=lambda x:x[:], reverse=True)
 			map_order = ["".join([rev_map[ch] for ch in lilhand]) for lilhand in orderzip]
-
-			#Get indexes of current map orders
-			#Assign them to a temp switch dict. 
-			#Swich them vals. 
-			old_idx = deque([hand_list.index(x) for x in map_order])
-			if ties != map_order:			 
-				while old_idx:
-					old_id = old_idx.popleft()
-					new_id = old_idx.popleft()
-					hands = swap_places(hands, old_id, new_id)
-
-	return hands[::-1]
-
-def swap_places(src_list:list, i:int, j:int)->list:
-	elem_i = src_list[i]
-	elem_j = src_list[j]
-	src_list[i] = elem_j
-	src_list[j] = elem_i
-	return src_list
+			for idx in tie_index:
+				hand_list[idx] = map_order.pop(0)
+	return hand_list[::-1]
 
 def calc_wins(ordered:list, bid_dict):
 	score = []
-	for idx, (handid, _, _) in enumerate(ordered):
+	for idx, handid in enumerate(ordered):
 		score.append(bid_dict[handid]*(idx+1))
 	return score
 
@@ -117,7 +100,7 @@ def pokertown(data:list, part:str):
 
 @log_time
 def part_A():
-	data = data_load("test_data")
+	data = data_load("data")
 	totalwinnings = pokertown(data, "A")
 	return sum(totalwinnings)
 
@@ -148,22 +131,7 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 #253566764
 #255710028
 #254281054  
+#247869019
+#247823654 #Winner!Lol
 
-#Fun trick for remapping the values to compare each character in a list of tuples
-# zip_ties = list(zip(*ties_map))
-# #Make a pile of tuples to compare
-# zip_deq = deque(zip_ties)
-# idx = 0
-# while the length of the set comparisons is equal to 1. 
-#I used a set because there may be a 3way or more tie and i need to extend it 
-#throughout the entire list
-# while True:
-# 	#move from the bottom of the list and check each
-# 	#first character to see who's greater or if there's a match.
-# 	temp = zip_deq.popleft()
-# 	if len(set(temp))==1:
-# 		#Track the idx as we move through the pile
-# 		idx += 1
-# 		continue
-# 	else:
-		#Map the values back to characters for indexing
+#Part B Notes. 
