@@ -4,7 +4,7 @@ root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__
 sys.path.append(root_folder)
 from utils.time_run import log_time
 from utils.loc import recurse_dir
-from collections import Counter, deque
+from collections import Counter
 
 DAY = './day7/'
 global CARD_ORDER
