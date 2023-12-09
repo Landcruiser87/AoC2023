@@ -5,6 +5,8 @@ sys.path.append(root_folder)
 from utils.time_run import log_time
 from utils.loc import recurse_dir
 from collections import deque
+from itertools import cycle
+from numpy import lcm
 
 DAY = './day8/'
 def data_load(filen:str)->list:
@@ -28,13 +30,14 @@ def build_instructions(data):
 def get_to_steppin(data:list, part:str):
 	instructions, map_dict = build_instructions(data)
 	steps = 0
-	instruct = deque(list(instructions))
 
 	if part == "A":
 		start = "AAA"
 		end = "ZZZ"
 		#I feel like he's trying to trick me 
 		#with this while loop.....  ಠ_ಠ
+		instruct = deque(list(instructions))
+
 		while start != end:
 			move = instruct.popleft()
 			left = map_dict[start][0]
@@ -45,35 +48,23 @@ def get_to_steppin(data:list, part:str):
 				start = left
 			steps += 1
 			if len(instruct) == 0: instruct.extend(list(instructions))
-
+		return steps
+	
 	if part == "B":
 		starts = [key for key in map_dict.keys() if key.endswith("A")]
-		while True:
-			move = instruct.popleft()
-			for idx in range(len(starts)):
-				left = map_dict[starts[idx]][0]
-				right = map_dict[starts[idx]][1]
-				if move == "R":
-					starts[idx] = right
-				else:
-					starts[idx] = left
-			steps += 1
-			if len(instruct) == 0: instruct.extend(list(instructions))
-			endcondition = all(start.endswith("Z") for start in starts)
-			if endcondition: break
-	return steps
-
-def gcd(a, b):
-	if a==0 and b == 0: 
-		return 0
-	else:
-		if b==0:
-			return a
-	return gcd(b, a % b)
-
-def lcm(a, b):
-	return abs(a*b) / gcd(a, b)
-
+		route_table = len(starts) * [0]
+		dir_dict = {"L":0, "R":1}
+		for idx, route in enumerate(starts):
+			#Set the cycle to loop instructions until end condition
+			dirs = cycle(instructions)
+			while not route.endswith("Z"):
+				# increase the path of start positions
+				route_table[idx] += 1
+				#Grab the next route 
+				next_idx = next(dirs)
+				route = map_dict[route][dir_dict[next_idx]]
+		#Use LCM to find the shortest path
+		return lcm.reduce(route_table)
 
 @log_time
 def part_A():
@@ -83,8 +74,12 @@ def part_A():
 
 @log_time
 def part_B():
-	data = data_load("test_data2")
+	fail_list = [
+		375488167, 
+	]
+	data = data_load("data")
 	steps = get_to_steppin(data, "B")
+	if steps in fail_list: raise ValueError("\nThat one doesn't work")
 	return steps
 	
 print(f"Part A solution: \n{part_A()}\n")
@@ -105,3 +100,5 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 #Part B Notes
 
 ##  ehh now we are ghosts?  
+
+# 375488167 -> Too low
