@@ -12,27 +12,27 @@ def data_load(filen:str)->list:
 		data = f.read().splitlines()
 		arr = [x.strip() if x != "" else "" for x in data]
 	return arr
-def predict_next(line, temp)->int:
-	pass
 
 def extrapolate(data:list)->list:
-	predictions, depth = [], 0
+	predictions, tips, depth = [], [], 0
 	for line in data:
 		temp = [int(num) for num in line.split()]
 		while True:
 			diff = np.diff(temp)
 			depth += 1
-			if np.all(diff==0) and len(diff) > 1:
-				predictions.append(predict_next(line, temp))
-				depth = 0
+			if np.all(temp==0) and len(temp) > 1:
 				break
 			else:
+				tips.append(temp[-1])
 				temp = diff
+		predictions.append(sum(tips))
+		tips, depth = [], 0
+		
 	return predictions
 
 @log_time
 def part_A():
-	data = data_load("test_data")
+	data = data_load("data")
 	predictions = extrapolate(data)
 	return sum(predictions)
 
@@ -41,7 +41,7 @@ def part_B():
 	data = data_load()
 	
 print(f"Part A solution: \n{part_A()}\n")
-print(f"Part B solution: \n{part_B()}\n")
+# print(f"Part B solution: \n{part_B()}\n")
 print(f"Lines of code \n{recurse_dir(DAY)}")
 
 ########################################################
