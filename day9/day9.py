@@ -5,7 +5,6 @@ sys.path.append(root_folder)
 from utils.time_run import log_time
 from utils.loc import recurse_dir
 import numpy as np
-from collections import deque
 
 DAY = './day9/'
 def data_load(filen:str)->list:
