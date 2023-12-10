@@ -15,4 +15,4 @@ These are my solutions for the [Advent of Code 2023](https://adventofcode.com/20
 | 05  | ⭐⭐ | [Day5](https://github.com/Landcruiser87/AoC2023/blob/main/day5/day5.py) |[If You Give A Seed A Fertilizer](https://adventofcode.com/2023/day/5) | 1.003 ms | 5.001 ms | 130 |
 | 06  | ⭐⭐ | [Day6](https://github.com/Landcruiser87/AoC2023/blob/main/day6/day6.py) |[Wait For It](https://adventofcode.com/2023/day/6) | 0.0000 ns | 7.17 s | 50 |
 | 07  | ⭐⭐ | [Day7](https://github.com/Landcruiser87/AoC2023/blob/main/day7/day7.py) |[Camel Cards](https://adventofcode.com/2023/day/7) | 14.999 ms | 16.001 | 179 <-- 🤮 🤮|
-| 08  | ⭐⭐ | [Day8](https://github.com/Landcruiser87/AoC2023/blob/main/day8/day8.py) |[Haunted Wasteland](https://adventofcode.com/2023/day/8) | 7.995 ms | 60.886 | 87 <-- 👻 👻|
+| 08  | ⭐⭐ | [Day8](https://github.com/Landcruiser87/AoC2023/blob/main/day8/day8.py) |[Haunted Wasteland](https://adventofcode.com/2023/day/8) | 7.003 ms | 41.255 | 72 <-- 👻 👻|

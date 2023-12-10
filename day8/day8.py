@@ -7,8 +7,8 @@ from utils.loc import recurse_dir
 from collections import deque
 from functools import reduce
 from math import gcd
-
 DAY = './day8/'
+
 def data_load(filen:str)->list:
 	with open(f'{DAY}{filen}.txt', 'r') as f:
 		data = f.read().splitlines()
@@ -80,9 +80,7 @@ def part_A():
 
 @log_time
 def part_B():
-	fail_list = [
-		375488167, 
-	]
+	fail_list = [375488167]
 	data = data_load("data")
 	steps = get_to_steppin(data, "B")
 	if steps in fail_list: raise ValueError("\nThat one doesn't work")
