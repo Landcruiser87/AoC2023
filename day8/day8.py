@@ -5,8 +5,8 @@ sys.path.append(root_folder)
 from utils.time_run import log_time
 from utils.loc import recurse_dir
 from collections import deque
-from itertools import cycle
-from numpy import lcm
+from functools import reduce
+from math import gcd
 
 DAY = './day8/'
 def data_load(filen:str)->list:
@@ -14,6 +14,12 @@ def data_load(filen:str)->list:
 		data = f.read().splitlines()
 		arr = [x.strip() if x != "" else "" for x in data]
 	return arr
+
+def lcm(numbers):
+    # Use the 'reduce' function to apply a lambda function that calculates the LCM for a pair of numbers.
+    # The lambda function multiplies two numbers and divides the result by their greatest common divisor (gcd).
+    # This process is applied cumulatively to all numbers in the list.
+    return reduce((lambda x, y: int(x * y / gcd(x, y))), numbers)
 
 def build_instructions(data):
 	instructions = data[0]
@@ -29,9 +35,8 @@ def build_instructions(data):
 
 def get_to_steppin(data:list, part:str):
 	instructions, map_dict = build_instructions(data)
-	steps = 0
-
 	if part == "A":
+		steps = 0
 		start = "AAA"
 		end = "ZZZ"
 		#I feel like he's trying to trick me 
@@ -48,27 +53,28 @@ def get_to_steppin(data:list, part:str):
 				start = left
 			steps += 1
 			if len(instruct) == 0: instruct.extend(list(instructions))
-		return steps
+		return steps 
 	
 	if part == "B":
 		starts = [key for key in map_dict.keys() if key.endswith("A")]
 		route_table = len(starts) * [0]
 		dir_dict = {"L":0, "R":1}
 		for idx, route in enumerate(starts):
-			#Set the cycle to loop instructions until end condition
-			dirs = cycle(instructions)
+			#Set a deque (could use cycle) and popleft through vals
+			dirs = deque(instructions)
 			while not route.endswith("Z"):
 				# increase the path of start positions
 				route_table[idx] += 1
 				#Grab the next route 
-				next_idx = next(dirs)
+				next_idx = dirs.popleft()
 				route = map_dict[route][dir_dict[next_idx]]
+				if len(dirs) == 0: dirs.extend(list(instructions))
 		#Use LCM to find the shortest path
-		return lcm.reduce(route_table)
+		return lcm(route_table)
 
 @log_time
 def part_A():
-	data = data_load("test_data")
+	data = data_load("data")
 	steps = get_to_steppin(data, "A")
 	return steps
 
@@ -98,7 +104,7 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 	#Repeat top line instruction until you get to ZZZ
 
 #Part B Notes
-
-##  ehh now we are ghosts?  
-
+# ehh now we are ghosts?  
+# Goal is to track multiple paths at once.  Find the amount
+# of steps will be the least common multiple of each value
 # 375488167 -> Too low
