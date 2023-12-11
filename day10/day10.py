@@ -43,47 +43,43 @@ def onboard(data:list, x1:int, y1:int)->bool:
 	else:
 		return True
 
-def scan_neighbors(data:list, curr_p:tuple, next_p:tuple, direction:str):
+def valid_path(data:list, next_p:tuple, direction:str):
 	if onboard(data, next_p[0], next_p[1]) and data[next_p[0]][next_p[1]] != ".":
 		next_val = MOV_DICT[data[next_p[0]][next_p[1]]]
 		if len(set(CON_DICT[direction]) & set(next_val)) > 0:
-			#Might need to check different combinations here. 
 			return next_p
+
 		#TODO - Need to rewrite this section to accomodate S starts
 
 def follow_the_paths(data:list)->int:
 	start = [[(row, col) for col in range(len(data[row])) if data[row][col]=="S"] for row in range(len(data))]
 	start = tuple(chain(*start))[0]
-	steps = [0, 0]
-	start_walk = False
+	steps = 0
 	visited = set([start])
-	positions = [start, start]
-	while True:
-		for id, position in enumerate(positions):
-			#Janky way to avoid first case where start/end match
-			if positions[0] == positions[1] and not start_walk:
-				start_walk = True
-				end_walk = False
-			
-			for direction, (x, y) in DIRS_DICT.items():
-				next_p = (position[0] + x, position[1] + y)
-				if next_p not in visited:
-					next_step = scan_neighbors(data, position, next_p, direction)
-					if next_step:
-						positions[id] = next_step
-						visited.add(next_step)
-						steps[id] += 1
-						break #Need this break here to get out of the directional search. 
+	position = start
+	walking = True
+	while walking:
+		for direction, (x, y) in DIRS_DICT.items():
+			next_p = (position[0] + x, position[1] + y)
+			if next_p not in visited:
+				next_step = valid_path(data, next_p, direction)
+				if next_step:
+					position = next_step
+					visited.add(next_step)
+					steps += 1
+					break #Need this break here to get out of the directional search. 
+			if next_p in visited:
+				if steps > 1:
+					if data[next_p[0]][next_p[1]] == "S":
+						steps += 1
+						walking = False
+						return steps // 2
 
-			if positions[0] == positions[1]:
-				start_walk == False
-				end_walk = True
-
-		#To print the table after every 2 moves below
+		# #To print the table after every 2 moves below
 		sp = None
 		for row in range(len(data)):
 			for col in range(len(data[1])):
-				if (row, col) == positions[0] or (row, col) == positions[1]:
+				if (row, col) == position:
 					sp = "\033[1m" + data[row][col] + "\033[0m"
 					col_id = col
 			if sp:
@@ -99,17 +95,7 @@ def follow_the_paths(data:list)->int:
 				print(data[row][:])
 
 		print("-"*30)
-		# if positions[0] == positions[1]:
-		# 	print("WINNA WINNA CHICKEN DINNA")
-		# 	end_walk = True
 
-	if steps[0] == steps[1]:
-		return steps[0]
-	
-	#Intial path search, 
-	#Then create two positions to track?
-
-	print("fun")
 @log_time
 def part_A():
 	data = data_load("test_data")
