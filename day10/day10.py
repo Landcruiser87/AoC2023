@@ -4,28 +4,49 @@ root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__
 sys.path.append(root_folder)
 from utils.time_run import log_time
 from utils.loc import recurse_dir
-import numpy as np
+from itertools import chain
 
 DAY = './day10/'
 def data_load(filen:str)->list:
 	with open(f'{DAY}{filen}.txt', 'r') as f:
 		data = f.read().splitlines()
-		arr = np.array([[str(x) for x in list(line)] for line in data], dtype=str)
+		arr = [[str(x) for x in list(line)] for line in data]
 	return arr
 
-def onboard(data:np.array, x1:int, y1:int)->bool:
+def onboard(data:list, x1:int, y1:int)->bool:
 	ht = len(data)
 	wd = len(data[0])
 	if x1 < 0 or y1 < 0 or x1 >= ht or y1 >= wd:
 		return False
 	else:
 		return True
-
-def follow_the_paths(data:np.array)->int:
-	row, col = np.where(data=="S")
-	start = (row.item(), col.item())
+	
+MOV_DICT = {
+	"|":["N","S"],
+	"-":["E","W"],
+	"L":["N","E"],
+	"J":["N","W"],
+	"7":["S","W"],
+	"F":["S","E"], 
+	"S":["N","S","E","W"]
+}
+def scan_neighbors(data:list, curr_pos:tuple):
+	for x in range(-1, 2):
+		for y in range(-1, 2):
+			next_pos = (curr_pos[0] + x, curr_pos[1] + y)
+			if onboard(data, next_pos[0], next_pos[1]) and data[next_pos[0]][next_pos[1]] != ".":
+				next_val = MOV_DICT[data[next_pos[0]][next_pos[1]]]
+				curr_dir = MOV_DICT[data[curr_pos[0]][curr_pos[1]]]
+				if set(next_val) - set(curr_dir) == len(set(next_val)):
+					return next_pos
+				
+def follow_the_paths(data:list)->int:
+	start = [[(row, col) for col in range(len(data[row])) if data[row][col]=="S"] for row in range(len(data))]
+	start = tuple(chain(*start))[0]
 	steps = 0
 	positions = [start, start]
+	for position in positions:
+		next_one = scan_neighbors(data, start)
 	
 	#Intial path search, 
 	#Then create two positions to track?
