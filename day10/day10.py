@@ -30,23 +30,41 @@ MOV_DICT = {
 	"F":["S","E"], 
 	"S":["N","S","E","W"]
 }
+DIRS_DICT = {
+	"N":(-1, 0),
+	"S":(1, 0),
+	"E":(1, 0),
+	"W":(-1, 0)
+}
 def scan_neighbors(data:list, curr_pos:tuple):
-	for x in range(-1, 2):
-		for y in range(-1, 2):
-			next_pos = (curr_pos[0] + x, curr_pos[1] + y)
-			if onboard(data, next_pos[0], next_pos[1]) and data[next_pos[0]][next_pos[1]] != ".":
-				next_val = MOV_DICT[data[next_pos[0]][next_pos[1]]]
-				curr_dir = MOV_DICT[data[curr_pos[0]][curr_pos[1]]]
-				if set(next_val) - set(curr_dir) == len(set(next_val)):
-					return next_pos
+	for direction, (x, y) in DIRS_DICT.items():
+		next_pos = (curr_pos[0] + x, curr_pos[1] + y)
+		if onboard(data, next_pos[0], next_pos[1]) and data[next_pos[0]][next_pos[1]] != ".":
+			next_val = MOV_DICT[data[next_pos[0]][next_pos[1]]]
+			curr_dir = MOV_DICT[data[curr_pos[0]][curr_pos[1]]]
+			if set(curr_dir) & set(next_val) == set(next_val):
+				return next_pos
 				
 def follow_the_paths(data:list)->int:
 	start = [[(row, col) for col in range(len(data[row])) if data[row][col]=="S"] for row in range(len(data))]
 	start = tuple(chain(*start))[0]
 	steps = 0
+	end_walk = False
+	visited = set()
 	positions = [start, start]
-	for position in positions:
-		next_one = scan_neighbors(data, start)
+	while not end_walk:
+		for id, position in enumerate(positions):
+			positions[id] = scan_neighbors(data, position)
+			if positions[id] not in visited:
+				visited.add(positions[id])
+			else:
+				pass
+		steps += 1
+		if positions[0] == positions[1]:
+			break
+		
+
+	return steps
 	
 	#Intial path search, 
 	#Then create two positions to track?
