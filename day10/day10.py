@@ -48,9 +48,10 @@ def valid_path(data:list, next_p:tuple, direction:str):
 		next_val = MOV_DICT[data[next_p[0]][next_p[1]]]
 		if len(set(CON_DICT[direction]) & set(next_val)) > 0:
 			return next_p
-
-		#TODO - Need to rewrite this section to accomodate S starts
-
+		#BUG
+		# Problem is here.  I think i need to split out each direction indivdually
+		#for each character  Keeping them both allows for edge points. 
+		
 def follow_the_paths(data:list)->int:
 	start = [[(row, col) for col in range(len(data[row])) if data[row][col]=="S"] for row in range(len(data))]
 	start = tuple(chain(*start))[0]
@@ -67,6 +68,7 @@ def follow_the_paths(data:list)->int:
 					position = next_step
 					visited.add(next_step)
 					steps += 1
+					print(f"{data[position[0]][position[1]]} Step{position}")
 					break #Need this break here to get out of the directional search. 
 			if next_p in visited:
 				if steps > 1:
@@ -76,29 +78,29 @@ def follow_the_paths(data:list)->int:
 						return steps // 2
 
 		# #To print the table after every 2 moves below
-		sp = None
-		for row in range(len(data)):
-			for col in range(len(data[1])):
-				if (row, col) == position:
-					sp = "\033[1m" + data[row][col] + "\033[0m"
-					col_id = col
-			if sp:
-				if col_id == 0:
-					print(f"[*{sp}*, {str(data[row][col_id+1:])[1:]}")
-				elif col_id == 4:
-					print(f"{str(data[row][:col_id])[:-1]}, *{sp}*,")
-				else:
-					print(f"{str(data[row][:col_id])[:-1]}, *{sp}*, {str(data[row][col_id+1:])[1:]}")
+		# sp = None
+		# for row in range(len(data)):
+		# 	for col in range(len(data[1])):
+		# 		if (row, col) == position:
+		# 			sp = "\033[1m" + data[row][col] + "\033[0m"
+		# 			col_id = col
+		# 	if sp:
+		# 		if col_id == 0:
+		# 			print(f"[*{sp}*, {str(data[row][col_id+1:])[1:]}")
+		# 		elif col_id == 4:
+		# 			print(f"{str(data[row][:col_id])[:-1]}, *{sp}*,")
+		# 		else:
+		# 			print(f"{str(data[row][:col_id])[:-1]}, *{sp}*, {str(data[row][col_id+1:])[1:]}")
 				
-				sp = None
-			else:
-				print(data[row][:])
+		# 		sp = None
+		# 	else:
+		# 		print(data[row][:])
 
-		print("-"*30)
+		# print("-"*30)
 
 @log_time
 def part_A():
-	data = data_load("test_data")
+	data = data_load("data")
 	steps = follow_the_paths(data)
 	return steps
 @log_time
