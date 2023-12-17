@@ -19,12 +19,19 @@ def data_load(filen:str)->list:
 def expand_galaxy(data:list, part:str, magnify:int=100):
 	temp_data = data.copy()
 	col_idx, row_idx = [], []
+	#Grab the indexes with empty columns
 	for row in range(data.shape[0]):
 		if "#" not in data[row, :]:
 			row_idx.append(row)
+
+	for col in range(data.shape[1]): 
+		if "#" not in data[:, col]:
+			col_idx.append(col)
 			
 	if part == "A":
 		temp_data = np.insert(temp_data, row_idx, "."*temp_data.shape[0], axis = 0)
+		temp_data = np.insert(temp_data, col_idx, "."*temp_data.shape[1], axis = 1)
+
 	else:
 		input_arr = np.repeat(".", temp_data.shape[0]*magnify).reshape(magnify, -1)
 		shift = 0
@@ -32,20 +39,13 @@ def expand_galaxy(data:list, part:str, magnify:int=100):
 			# print(temp_data[:row+shift, :], "\n")
 			# print(input_arr[:-1], "\n")
 			# print(temp_data[row+shift:, :], "\n")
-			temp_data = np.vstack([
+			temp_data = np.concatenate([
 				temp_data[:row+shift, :],
-				input_arr[:-1],
+				input_arr[:-1, :],
 				temp_data[row+shift:, :]
-			])
+			], axis=0)
 			shift += magnify - 1
 			# print("\n"*8, temp_data,"\n"*2, temp_data.shape)
-
-	for col in range(data.shape[1]): 
-		if "#" not in data[:, col]:
-			col_idx.append(col)
-	if part == "A":
-		temp_data = np.insert(temp_data, col_idx, "."*temp_data.shape[1], axis = 1)
-	else:
 
 		input_arr = np.repeat(".", temp_data.shape[0]*magnify).reshape(-1, magnify)
 		shift = 0
@@ -54,13 +54,14 @@ def expand_galaxy(data:list, part:str, magnify:int=100):
 			# print(input_arr[:, :-1], "\n")
 			# print(temp_data[:, col+shift:], "\n")
 
-			temp_data = np.hstack([
+			temp_data = np.concatenate([
 				temp_data[:, :col+shift],
 				input_arr[:, :-1], 
 				temp_data[:, col+shift:]
-			])
+			], axis=1)
 			shift += magnify - 1
 			# print("\n"*8, temp_data,"\n"*2, temp_data.shape)
+
 	return temp_data	
 
 def calc_manhattan(combo:tuple):
