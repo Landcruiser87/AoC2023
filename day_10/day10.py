@@ -51,7 +51,7 @@ def valid_path(data:list, next_p:tuple, direction:str):
 		#BUG
 		# Problem is here.  I think i need to split out each direction indivdually
 		#for each character  Keeping them both allows for edge points. 
-		
+		#TODO come back and finish part A
 def follow_the_paths(data:list)->int:
 	start = [[(row, col) for col in range(len(data[row])) if data[row][col]=="S"] for row in range(len(data))]
 	start = tuple(chain(*start))[0]
