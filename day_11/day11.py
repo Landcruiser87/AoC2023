@@ -15,7 +15,6 @@ def data_load(filen:str)->list:
 	return np.array(arr, dtype=str)
 
 def expand_galaxy(data:list, magnify:int=2):
-	temp_data = data.copy()
 	col_idx, row_idx = [], []
 	step_count = 0
 
