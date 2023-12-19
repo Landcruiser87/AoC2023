@@ -76,6 +76,6 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 # First thing to do is expand the galaxy. 
 # Those get expanded by however many open rows / cols
 # there are that don't contain a # symbol
-# add one row/col for each blank you have respectively. 
+# add an extra row/col of blanks ... for each blank row of ... you find
 
 #Part B
