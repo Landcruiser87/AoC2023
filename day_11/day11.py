@@ -6,8 +6,6 @@ from utils.time_run import log_time
 from utils.loc import recurse_dir
 import numpy as np
 from itertools import combinations
-from collections import deque
-
 
 DAY = './day_11/'
 def data_load(filen:str)->list:
@@ -16,9 +14,11 @@ def data_load(filen:str)->list:
 		arr = [list(x.strip()) if x != "" else "" for x in data]
 	return np.array(arr, dtype=str)
 
-def expand_galaxy(data:list, part:str, magnify:int=100):
+def expand_galaxy(data:list, magnify:int=2):
 	temp_data = data.copy()
 	col_idx, row_idx = [], []
+	step_count = 0
+
 	#Grab the indexes with empty columns
 	for row in range(data.shape[0]):
 		if "#" not in data[row, :]:
@@ -27,74 +27,44 @@ def expand_galaxy(data:list, part:str, magnify:int=100):
 	for col in range(data.shape[1]): 
 		if "#" not in data[:, col]:
 			col_idx.append(col)
-			
-	if part == "A":
-		temp_data = np.insert(temp_data, row_idx, "."*temp_data.shape[0], axis = 0)
-		temp_data = np.insert(temp_data, col_idx, "."*temp_data.shape[1], axis = 1)
 
-	else:
-		input_arr = np.repeat(".", temp_data.shape[0]*magnify).reshape(magnify, -1)
-		shift = 0
-		for row in row_idx:
-			# print(temp_data[:row+shift, :], "\n")
-			# print(input_arr[:-1], "\n")
-			# print(temp_data[row+shift:, :], "\n")
-			temp_data = np.concatenate([
-				temp_data[:row+shift, :],
-				input_arr[:-1, :],
-				temp_data[row+shift:, :]
-			], axis=0)
-			shift += magnify - 1
-			# print("\n"*8, temp_data,"\n"*2, temp_data.shape)
-
-		input_arr = np.repeat(".", temp_data.shape[0]*magnify).reshape(-1, magnify)
-		shift = 0
-		for col in col_idx:
-			# print(temp_data[:, :col+shift], "\n")
-			# print(input_arr[:, :-1], "\n")
-			# print(temp_data[:, col+shift:], "\n")
-
-			temp_data = np.concatenate([
-				temp_data[:, :col+shift],
-				input_arr[:, :-1], 
-				temp_data[:, col+shift:]
-			], axis=1)
-			shift += magnify - 1
-			# print("\n"*8, temp_data,"\n"*2, temp_data.shape)
-
-	return temp_data	
-
-def calc_manhattan(combo:tuple):
-	return np.sum(np.abs(np.array(combo[0])-np.array(combo[1])))
-
-def calculate_paths(data:list, part:str):
-	gmap = expand_galaxy(data, part)
-	paths = []
 	# Extract all indices where == #
-	pound_towns = list(zip(np.where(gmap=="#")[0], np.where(gmap=="#")[1]))
+	pound_towns = list(zip(np.where(data=="#")[0], np.where(data=="#")[1]))
 	# Find all possible combinations of points
 	mambo_combo = list(combinations(pound_towns, 2))
-	#Calculate the shortest distance for each 
-	for combo in mambo_combo:
-		paths.append(calc_manhattan(combo))
-	return paths
+
+	#Calculate the shortest distance for each combinattion
+	for (x1,y1),(x2,y2) in mambo_combo:
+		#MIght take this out for hte absolutes
+		if x1 > x2:
+			x1, x2 = x2, x2
+		if y1 > y2:
+			y1, y2 = y2, y1
+		for step in range(x1, x2):
+			if step in row_idx:
+				step_count += magnify
+			else:
+				step_count += 1
+
+		for step in range(y1, y2):
+			if step in col_idx:
+				step_count += magnify
+			else:
+				step_count += 1
+
+	return step_count	
 
 @log_time
 def part_A():
-	data = data_load("test_data")
-	paths = calculate_paths(data, "A")
-	return sum(paths)
+	data = data_load("data")
+	count = expand_galaxy(data)
+	return count
 
 @log_time
 def part_B():
-	low_fails = [78845397]
-	high_fails = []
-	data = data_load("test_data")
-	paths = calculate_paths(data, "B")
-	path_sum = sum(paths)
-	if path_sum in low_fails: raise ValueError(f"{path_sum} is too low")
-	if path_sum in high_fails: raise ValueError(f"{path_sum} is too high")
-	return sum(paths)
+	data = data_load("data")
+	count = expand_galaxy(data, 1_000_000)
+	return count
 	
 print(f"Part A solution: \n{part_A()}\n")
 print(f"Part B solution: \n{part_B()}\n")
