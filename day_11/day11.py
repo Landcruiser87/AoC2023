@@ -30,12 +30,12 @@ def expand_galaxy(data:list, magnify:int=2):
 
 	# Extract all indices where == #
 	pound_towns = list(zip(np.where(data=="#")[0], np.where(data=="#")[1]))
+
 	# Find all possible combinations of points
 	mambo_combo = list(combinations(pound_towns, 2))
 
 	#Calculate the shortest distance for each combinattion
 	for (x1,y1),(x2,y2) in mambo_combo:
-		#MIght take this out for hte absolutes
 		if x1 > x2:
 			x1, x2 = x2, x2
 		if y1 > y2:
@@ -80,5 +80,3 @@ print(f"Lines of code \n{recurse_dir(DAY)}")
 # add one row/col for each blank you have respectively. 
 
 #Part B
-
-#toolow - 78845397
