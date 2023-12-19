@@ -17,4 +17,5 @@ These are my solutions for the [Advent of Code 2023](https://adventofcode.com/20
 | 07  | ⭐⭐ | [Day7](https://github.com/Landcruiser87/AoC2023/blob/main/day7/day7.py) |[Camel Cards](https://adventofcode.com/2023/day/7) | 14.999 ms | 16.001 ms | 179 <-- 🤮 🤮|
 | 08  | ⭐⭐ | [Day8](https://github.com/Landcruiser87/AoC2023/blob/main/day8/day8.py) |[Haunted Wasteland](https://adventofcode.com/2023/day/8) | 7.003 ms | 41.255 ms | 72 <-- 👻 👻|
 | 09  | ⭐⭐ | [Day9](https://github.com/Landcruiser87/AoC2023/blob/main/day9/day9.py) |[Mirage Maintenance](https://adventofcode.com/2023/day/9) | 20.366 ms | 21.303 ms | 49 <-- 🎉 🎉|
-
+| 10  | ⭐ | [Day10](https://github.com/Landcruiser87/AoC2023/blob/main/day_10/day10.py) |[Pipe Maze](https://adventofcode.com/2023/day/10) | 20.366 ms |  | |
+| 11  | ⭐⭐ | [Day11](https://github.com/Landcruiser87/AoC2023/blob/main/day_11/day11.py) |[Cosmic Expansion](https://adventofcode.com/2023/day/11) | 2.38 s | 2.06 s | 56 <-- 🎉 🎉|
