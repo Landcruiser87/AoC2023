@@ -4,6 +4,6 @@
 
 *__pycache__*
 \.aoc_venv*
-
+*.txt
 \scrap*
 

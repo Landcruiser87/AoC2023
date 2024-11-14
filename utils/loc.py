@@ -1,8 +1,7 @@
 import os, sys
 
-def recurse_dir(dir = './'):
+def recurse_dir(dir:str = './'):
     count = 0
-
     for file in os.listdir(dir):
         if not os.path.isfile(dir + file):
             count += recurse_dir(dir + file + '/')

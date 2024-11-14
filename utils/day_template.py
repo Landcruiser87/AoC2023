@@ -12,17 +12,23 @@ def data_load(filen:str)->list:
 		arr = [x.strip() if x != "" else "" for x in data]
 	return arr
 
-@log_time
-def part_A():
-	data = data_load()
 
-@log_time
-def part_B():
-	data = data_load()
-	
-print(f"Part A solution: \n{part_A()}\n")
-print(f"Part B solution: \n{part_B()}\n")
-print(f"Lines of code \n{recurse_dir(DAY)}")
+def main():
+	@log_time
+	def part_A():
+		data = data_load()
+
+	@log_time
+	def part_B():
+		data = data_load()
+		
+	print(f"Part A solution: \n{part_A()}\n")
+	print(f"Part B solution: \n{part_B()}\n")
+	print(f"Lines of code \n{recurse_dir(DAY)}")
+
+if __name__ == "__main__":
+	main()
+
 
 ########################################################
 #Notes
